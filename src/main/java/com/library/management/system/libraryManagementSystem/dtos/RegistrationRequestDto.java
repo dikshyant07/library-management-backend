@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RegistrationDto {
+public class RegistrationRequestDto {
     @NotBlank(message = "Name can not be blank")
     private String name;
     @Min(value = 10, message = "Only user with the age more than 10 can signup")
