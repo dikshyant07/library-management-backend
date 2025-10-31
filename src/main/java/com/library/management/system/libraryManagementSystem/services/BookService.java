@@ -34,6 +34,7 @@ public class BookService {
         Category category = categoryRepository.findByName(requestDto.getCategory()).orElseThrow(() -> new CategoryDoesNotExistsException("Category with this name does not exists"));
         Book book = bookMapper.toBook(requestDto);
         book.setCategory(category);
+        book.setAvailableCopies(requestDto.getTotalCopies());
         BookCreationResponseDto responseDto = bookMapper.toDto(bookRepository.save(book));
         return ApiResponse.<BookCreationResponseDto>builder()
                 .status(true)

@@ -32,6 +32,5 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Burrow> burrows;
-    @OneToOne(mappedBy = "user")
-    private RefreshToken refreshToken;
+
 }
