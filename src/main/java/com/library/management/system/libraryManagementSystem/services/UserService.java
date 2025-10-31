@@ -59,6 +59,7 @@ public class UserService {
                 .message("Successfully deleted the member with id " + id)
                 .reponseObject(rowsEffected + " records are deleted from the database")
                 .build();
+
     }
 }
 
