@@ -12,6 +12,7 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "burrows", ignore = true)
+    @Mapping(target = "gender", ignore = true)
     User toUser(RegistrationRequestDto requestDto);
 
     @Mapping(target = "userId", source = "id")

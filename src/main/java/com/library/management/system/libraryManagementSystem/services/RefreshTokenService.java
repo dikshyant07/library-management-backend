@@ -1,6 +1,7 @@
 package com.library.management.system.libraryManagementSystem.services;
 
 import com.library.management.system.libraryManagementSystem.dtos.ApiResponse;
+import com.library.management.system.libraryManagementSystem.dtos.LogoutRequestDto;
 import com.library.management.system.libraryManagementSystem.dtos.TokenRefreshRequestDto;
 import com.library.management.system.libraryManagementSystem.dtos.TokenRefreshResponseDto;
 import com.library.management.system.libraryManagementSystem.exceptions.RefreshTokenDoesNotExistsException;
@@ -10,6 +11,7 @@ import com.library.management.system.libraryManagementSystem.models.RefreshToken
 import com.library.management.system.libraryManagementSystem.models.User;
 import com.library.management.system.libraryManagementSystem.repositories.RefreshTokenRepository;
 import com.library.management.system.libraryManagementSystem.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +23,13 @@ import java.util.UUID;
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
-    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository) {
+    @Autowired
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, JwtService jwtService) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
 
     private RefreshToken generateRefreshToken(User user) {
@@ -54,7 +59,7 @@ public class RefreshTokenService {
         refreshTokenRepository.delete(token);
         RefreshToken savedRefreshToken = refreshTokenRepository.save(refreshToken);
         TokenRefreshResponseDto refreshResponseDto = TokenRefreshResponseDto.builder()
-                .accessToken("Access Token")
+                .accessToken(jwtService.generateJwt(token.getUser().getEmail()))
                 .refreshToken(savedRefreshToken.getToken())
                 .build();
         return ApiResponse.<TokenRefreshResponseDto>builder()
@@ -62,6 +67,16 @@ public class RefreshTokenService {
                 .httpStatus(HttpStatus.CREATED)
                 .message("Successfully refreshed the token")
                 .reponseObject(refreshResponseDto)
+                .build();
+    }
+
+    public ApiResponse<String> logoutUser(LogoutRequestDto logoutRequestDto) {
+        refreshTokenRepository.deleteByToken(logoutRequestDto.getToken());
+        return ApiResponse.<String>builder()
+                .status(true)
+                .httpStatus(HttpStatus.OK)
+                .message("Logged out successfully")
+                .reponseObject("successfully logged out from out application feel free lo log in again")
                 .build();
     }
 
