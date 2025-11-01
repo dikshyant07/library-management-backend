@@ -47,7 +47,10 @@ public class BorrowingService {
             throw new BookNoAvaibabeException(unavailableBooks.stream().map(Book::getTitle).collect(Collectors.joining(",")));
         }
         List<Book> availableBooks = booksIds.stream().map((id) -> bookRepository.findById(id).get()).toList();
-        availableBooks.stream().
+//        availableBooks.stream().map()
+        return null;
 
     }
+
+
 }
